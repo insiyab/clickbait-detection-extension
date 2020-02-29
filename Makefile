@@ -11,8 +11,3 @@ install:
 
 # ideally want to make run a version which requires a link or video title from a user
 # mainly for demo purposes
-
-demo:
-	@read -p "Enter Module Name:" module; \
-  file=$(module); \
-	touch $(file)
