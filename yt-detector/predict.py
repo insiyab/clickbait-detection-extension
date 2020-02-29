@@ -74,7 +74,7 @@ def average_embedding(tokens, word2vec, na_vector=None):
 
     return np.mean(np.array(vectors), axis=0)
 
-def predictor(title, views=None, likes=None, dislikes=None, comments=None):
+def youtube_predictor(title, views=None, likes=None, dislikes=None, comments=None):
 
     input = {
         "video_title": title,
@@ -83,7 +83,6 @@ def predictor(title, views=None, likes=None, dislikes=None, comments=None):
         "video_dislikes": dislikes if dislikes is not None else np.NaN,
         "video_comments": comments if comments is not None else np.NaN,
     }
-
 
     sample = pd.DataFrame([ input ])
 
@@ -161,4 +160,4 @@ if __name__ == '__main__':
     #     "video_dislikes": args.dislikes if args.dislikes is not None else np.NaN,
     #     "video_comments": args.comments if args.comments is not None else np.NaN,
     # }
-    print(predictor(args.title, args.views, args.likes, args.dislikes, args.dislikes))
+    print(youtube_predictor(args.title, args.views, args.likes, args.dislikes, args.dislikes))
