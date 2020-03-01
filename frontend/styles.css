@@ -1,0 +1,88 @@
+/* 3x3 grid */
+
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-row-end: -1;
+  background: white;
+  grid-column-gap: 5px;
+  width: 20em;
+}
+
+img {
+  grid-column-start: 1;
+  grid-column-end: span 1;
+  grid-row-start: 1;
+  grid-row-end: span 1;
+  place-self: center right;
+}
+
+h1 {
+  font-family: 'Oxanium';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 3em;
+  grid-column-start: 2;
+  grid-column-end: span 2;
+  grid-row-start: 1;
+  grid-row-end: span 1;
+  place-self: center left;
+}
+
+p {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1em;
+  place-self: center;
+}
+
+#ptext {
+  grid-column-start: 1;
+  grid-column-end: span 3;
+  grid-row-start: 2;
+  grid-row-end: span 1;
+
+}
+
+#videotext {
+  grid-column-start: 1;
+  grid-column-end: span 3;
+  grid-row-start: 3;
+  grid-row-end: span 1;
+}
+
+button {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1em;
+  background: white;
+  height: 3em;
+  border: 2px solid #2196F3;
+  border-radius: 15px;
+  grid-row-start: 4;
+  grid-row-end: span 1;
+  place-self: center;
+  justify-self: stretch;
+}
+
+button:hover {
+  background: #2196F3;
+  color: white;
+}
+
+#go_back {
+  grid-column-start: 1;
+  grid-column-end: span 1;
+}
+
+#get_info {
+  grid-column-start: 2;
+  grid-column-end: span 1;
+}
+
+#proceed {
+  grid-column-start: 3;
+  grid-column-end: span 1;
+}
