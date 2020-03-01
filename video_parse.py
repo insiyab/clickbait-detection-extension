@@ -26,21 +26,26 @@ def get_transcription(input):
         input_content=input, features=features,
         video_context=video_context)
 
-    print('\nProcessing video for speech transcription.')
+   # print('\nProcessing video for speech transcription.')
 
-    result = operation.result(timeout=600)
+    result = operation.result(timeout=100000)
 
     # There is only one annotation_result since only
     # one video is processed.
     annotation_results = result.annotation_results[0]
+    text = ""
     for speech_transcription in annotation_results.speech_transcriptions:
 
         for alternative in speech_transcription.alternatives:
-            print('Alternative level information:')
+            #print('Alternative level information:')
 
-            print('Transcript: {}'.format(alternative.transcript))
-            print('Confidence: {}\n'.format(alternative.confidence))
+            text = text + str(alternative.transcript) + " "
+            #print('Confidence: {}\n'.format(alternative.confidence))
 
+    #print(text)
+    obj = {}
+    obj['text'] = text
+    print(obj)
 if __name__ == '__main__':
     # parser = argparse.ArgumentParser(
     #     description=__doc__,
