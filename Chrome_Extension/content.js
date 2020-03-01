@@ -1,45 +1,75 @@
 // used for recording DOM mutations
 let nextBirthmark = 0;
 let targetElement = {style: {background: ''}};
-let n = 0;
+let targ = {
+	'title': '',
+	'views': '',
+	'URL': ''
+};
+
+function apiRequest(url, obj) {
+	let req = new XMLHttpRequest();
+
+	req.open("POST","http://127.0.0.1:5000/this",true);
+	req.onload = (arg) => {
+		console.log(arg);
+	}
+	req.send(JSON.stringify(obj));
+	//req.send("kelper helper");
+}
+
+function openUrl(url) {
+	chrome.runtime.sendMessage(
+		{
+			task: "open-url",
+			url: url
+		},
+		response => {
+			console.log("TITLE:");
+			console.log(response.videoTitle);
+		});
+}
 
 function highlightElement(e) {
 	var evt = e || window.event;
 
-	if (evt.shiftKey) {
-		E = e.target;
+	//if (evt.shiftKey) {
+	E = e.target;
 
-		// highlight (hold down shift)
-		if (!evt.ctrlKey)
-			if (E != targetElement) {
-				targetElement.style.background = '';
-				targetElement = E;
-				E.style.background = "#FDFF47";
-				sendMsg("msg-to-popup",E.tagName);
-				console.log(E);
-				let req = new XMLHttpRequest();
-				let obj = {
-					'param1': "first param",
-					'param2': "second param"
-				}
-				//req.open("GET","http://127.0.0.1:5000/this",true);
-				req.open("POST","http://127.0.0.1:5000/this",true);
-				req.onload = (arg) => {
-					console.log(arg);
-					console.log("you");
-					document.getElementById("output_element");
-				}
-				//req.send("from popup script!");
-				req.send("kelper helper");
+	// highlight (hold down shift)
+	//if (!evt.ctrlKey)
+		//if (E != targetElement && E.tagName == "IMG") {
+		if (E.tagName == "IMG") {
 
+			targetElement.style.background = '';
+			targetElement = E;
+			if (url = E.parentNode.parentNode.href) {
+				targ.URL = url;
+				console.log(targ);
+			}
 
-			} 
+			//E.style.background = "#FDFF47";
 
-		// unhighlight (hold down shift + control)
-		if (evt.ctrlKey)
-			E.style.background = "";
+			//sendMsg("msg-to-popup",E.tagName);
+		} 
+	// unhighlight (hold down shift + control)
+	if (evt.ctrlKey)
+		E.style.background = "";
+	//}
+	if (E.id == "video-title") {
+		targ.title = E.innerText;
+		console.log(targ);
 	}
+
 }
+document.addEventListener('keydown',e => {
+	var evt = e || window.event;
+	console.log("KEY PRESS");
+	if (evt.shiftKey) {
+		console.log("SHIFT");
+		apiRequest("127.0.0.1:5000/this",targ);
+	}
+});
 
 function clearHighlighted(selectedElements) {
 
@@ -78,7 +108,11 @@ function sendMsg(task, msg) {
 
 function messageListener(request, sender, sendResponse) {
 	switch (request.task) {
+		case "get-video-metrics":
+			sendResponse({videoTitle: document.getElementsByTagName("title").innerText});
+			break;
 		case "activate-tool":
+			console.log("tool activated");
 			document.addEventListener("mousemove", highlightElement, false);
 			break;
 		case "deactivate-tool":
@@ -89,7 +123,6 @@ function messageListener(request, sender, sendResponse) {
 	}
 }
 chrome.runtime.onMessage.addListener(messageListener);
-
 
 
 document.addEventListener(
