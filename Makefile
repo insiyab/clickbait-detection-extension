@@ -1,6 +1,8 @@
 API_PATH="$(HOME)/Desktop/clickbait-detector/cloud_api.json"
 
-all: install server
+all: backend
+
+backend: install server
 
 install:
 	pip3 install --upgrade flask emoji numpy pandas gensim
