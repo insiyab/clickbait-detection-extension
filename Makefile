@@ -6,6 +6,7 @@ backend: install server
 
 install:
 	pip3 install --upgrade flask emoji numpy pandas gensim
+	pip3 install -U flask-cors
 	pip3 install -U scikit-learn==0.19.0
 	pip3 install --upgrade google-cloud-videointelligence
 	pip3 install --upgrade google-cloud-language
