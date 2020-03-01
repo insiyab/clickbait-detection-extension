@@ -1,6 +1,7 @@
 // used for recording DOM mutations
 let nextBirthmark = 0;
 let targetElement = {style: {background: ''}};
+let n = 0;
 
 function highlightElement(e) {
 	var evt = e || window.event;
@@ -14,6 +15,24 @@ function highlightElement(e) {
 				targetElement.style.background = '';
 				targetElement = E;
 				E.style.background = "#FDFF47";
+				sendMsg("msg-to-popup",E.tagName);
+				console.log(E);
+				let req = new XMLHttpRequest();
+				let obj = {
+					'param1': "first param",
+					'param2': "second param"
+				}
+				//req.open("GET","http://127.0.0.1:5000/this",true);
+				req.open("POST","http://127.0.0.1:5000/this",true);
+				req.onload = (arg) => {
+					console.log(arg);
+					console.log("you");
+					document.getElementById("output_element");
+				}
+				//req.send("from popup script!");
+				req.send("kelper helper");
+
+
 			} 
 
 		// unhighlight (hold down shift + control)
@@ -47,31 +66,31 @@ function viewMutations(mutationList, observer) {
 		mark(unmarked);
 }
 
-function messageListener(request, sender, sendResponse) {
-	/*
-	switch (request.task) {
-	}
-	*/
-}
-chrome.runtime.onMessage.addListener(messageListener);
-
-function clickYouTubeElement(element) {
+function sendMsg(task, msg) {
 
 	chrome.runtime.sendMessage(
 		{
-			task: "click"
+			task: task,
+			msg: msg
 			//nodeToClick: nodeBirthmark
-		},
-		response => {
-			/*
-			localStorage.removeItem(nodeBirthmark);
-			if (response.contains)
-				console.log("\""+queryText+"\" exists in tab "+response.tabId);
-			else
-				console.log("\""+queryText+"\" dne in tab "+response.tabId);
-			*/
 		});
 }
+
+function messageListener(request, sender, sendResponse) {
+	switch (request.task) {
+		case "activate-tool":
+			document.addEventListener("mousemove", highlightElement, false);
+			break;
+		case "deactivate-tool":
+			document.removeEventListener("mousemove", highlightElement, false);
+			break;
+		default:
+			console.log("ERROR REQUEST TASK (FROM CONTENT SCRIPT)");
+	}
+}
+chrome.runtime.onMessage.addListener(messageListener);
+
+
 
 document.addEventListener(
 	"keydown", 
@@ -89,12 +108,11 @@ document.addEventListener(
 	
 		// press shift + ctrl + enter to click all the selected elements
 		if (evt.shiftKey && evt.ctrlKey && evt.which === 13) 
-			for (var i=0; i<1000; i++)
-				chrome.runtime.sendMessage(
-					{
-						task: "open-popup"
-					},
-					response => {console.log(response.res);});
+			chrome.runtime.sendMessage(
+				{
+					task: "open-popup"
+				},
+				response => {console.log(response.res);});
 	
 		// press ctrl + 'r' keys to activate/execute video check tool
 		if (evt.ctrlKey && evt.which == 82)
