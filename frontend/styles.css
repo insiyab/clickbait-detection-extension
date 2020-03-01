@@ -90,17 +90,17 @@ p {
   color: white;
 }
 
-#go_back {
+/* #go_back {
   grid-column-start: 1;
   grid-column-end: span 1;
-}
+} */
 
 #get_info {
-  grid-column-start: 2;
-  grid-column-end: span 1;
+  grid-column-start: 1;
+  grid-column-end: span 3;
 }
 
-#proceed {
+/* #proceed {
   grid-column-start: 3;
   grid-column-end: span 1;
-}
+} */
