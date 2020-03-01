@@ -4,8 +4,10 @@ from lang_parse import *
 from get_frames import *
 import json
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/', methods = ['GET'])
 def hello_world():
@@ -23,7 +25,7 @@ def check_for_clickbait():
     }
 
     # get parameters from JSON request
-    title, views, likes, dislikes = None, None, None, None
+    title, views, likes, dislikes, comments = None, None, None, None
     if 'title' in client_input:
         title = str(client_input['title'])
     else:
@@ -34,10 +36,12 @@ def check_for_clickbait():
         likes = int(client_input['likes'])
     if 'dislikes' in client_input:
         dislikes = int(client_input['dislikes'])
+    if 'comments' in client_input:
+        comments = int(client_input['comments'])
 
     # analyze parameters and send JSON response
     try:
-        response["is_clickbait"] = youtube_predictor(title, views, likes, dislikes, None)
+        response["is_clickbait"] = youtube_predictor(title, views, likes, dislikes, comments)
         response["success"] = True
         response["error"] = "None"
         return response
