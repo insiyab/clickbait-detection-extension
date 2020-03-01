@@ -10,5 +10,8 @@ install:
 	pip3 install --upgrade google-cloud-language
 	# export GOOGLE_APPLICATION_CREDENTIALS=$(API_PATH) # doesn't work because it runs in subshell
 
-# ideally want an option which requires a link or video title from a user
-# mainly for demo purposes
+server:
+	export FLASK_APP=backend.py && flask run
+
+clean:
+	rm -rf __pycache__ .DS_store
