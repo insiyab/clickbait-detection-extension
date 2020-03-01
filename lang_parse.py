@@ -24,7 +24,7 @@ def audio_classify(text, verbose=True):
 
     if "fuck"in text or "cunt" in text:
         prof = "R"
-    elif "shit" in text or "bitch" in text:
+    elif "shit" in text or "cock" in text:
         prof = "PG-13"
     elif "ass" in text or "damn" in text:
         prof = "PG"
