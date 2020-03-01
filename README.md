@@ -33,7 +33,7 @@ Clicksafe is a Google Chrome extension that warns users of clickbait content whe
 
 ### How We Built It
 
-Clicksafe leverages this [YouTube Clickbait Detector](https://github.com/alessiovierti/youtube-clickbait-detector) by [alessiovierti](https://github.com/alessiovierti) as well as the Google Cloud APIs for Video Intelligence, Vision, and Natural Language Processing. We also built a lightweight Flask application
+Clicksafe leverages this [YouTube Clickbait Detector](https://github.com/alessiovierti/youtube-clickbait-detector) by [alessiovierti](https://github.com/alessiovierti) as well as the Google Cloud APIs for [Video Intelligence](https://cloud.google.com/video-intelligence/docs), [Vision](https://cloud.google.com/vision/docs), and [Natural Language Processing](https://cloud.google.com/natural-language/docs). We also built a lightweight Flask application
 
 ### Challenges
 
