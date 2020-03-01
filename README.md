@@ -14,8 +14,8 @@ To try out this project for yourself, follow the instructions below in a bash sh
 # Navigate to an empty directory
 git clone https://github.com/insiyab/clickbait-detection-extension.git
 
-# Download and move your Google Cloud API JSON file into the directory
-mv <api-file>.json clickbait-detect-extension/cloud-api.json
+# Download and copy your Google Cloud API JSON file into the directory
+cp <api-file>.json clickbait-detect-extension/cloud-api.json
 
 # Navigate inside the cloned directory and make the backend
 make backend
