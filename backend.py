@@ -1,5 +1,6 @@
 from flask import Flask
 from predict_youtube import *
+from lang_parse import *
 from get_frames import *
 import json
 import os
@@ -10,7 +11,7 @@ app = Flask(__name__)
 def hello_world():
     return 'Welcome to ClickSafe!'
 
-@app.route('/is_clickbait', methods = ['GET'])
+@app.route('/is_clickbait', methods = ['POST'])
 def check_for_clickbait():
     client_input = request.json
 
@@ -49,7 +50,7 @@ def check_for_clickbait():
 
     # return "checking for clickbait"
 
-@app.route('/get_info', methods = ['GET'])
+@app.route('/get_info', methods = ['POST'])
 def get_more_info():
     client_input = request.json
 
@@ -69,11 +70,11 @@ def get_more_info():
     else:
         return json.dumps(response), 400
 
-    if 'audio_transcription' in client_input:
-        audio_transcription = str(client_input['audio_transcription'])
-    else:
-        response["error"] = "MISSING_AUDIO_TRANSCRIPTION"
-        return json.dumps(response), 400
+    # if 'audio_transcription' in client_input:
+    #     audio_transcription = str(client_input['audio_transcription'])
+    # else:
+    #     response["error"] = "MISSING_AUDIO_TRANSCRIPTION"
+    #     return json.dumps(response), 400
 
     # download YouTube video to vid_shots folder as .mp4
     try:
@@ -91,7 +92,7 @@ def get_more_info():
     # analyze video content and send JSON response
     try:
         video_path = os.path.join("vid_shots", "video.mp4")
-        response["audio_analysis"] = 0 # call appropriate function
+        response["audio_analysis"] = audio_classify(video_path) # call appropriate function
         response["video_analysis"] = get_video_labels_and_safety(video_path)
         response["success"] = True
         response["error"] = "None"

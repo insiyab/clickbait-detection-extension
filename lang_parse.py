@@ -10,8 +10,7 @@ from google.cloud.language import types
 from google.cloud import language_v1
 from google.cloud.language_v1 import enums
 
-def classify(text, verbose=True):
-
+def audio_classify(text, verbose=True):
 
     classification_client = language.LanguageServiceClient()
     entities_client = language_v1.LanguageServiceClient()
@@ -31,7 +30,6 @@ def classify(text, verbose=True):
         prof = "PG"
     else:
         prof = "G"
-    
 
     obj = {}
     obj['categories'] = []
@@ -53,10 +51,7 @@ def classify(text, verbose=True):
         obj["entities"].append(entity)
         j=j+1
     print(obj)
+    return obj
 
-
-
-if __name__ == '__main__':
-	classify(sys.argv[1])
-
-
+# if __name__ == '__main__':
+# 	audio_classify(sys.argv[1])
