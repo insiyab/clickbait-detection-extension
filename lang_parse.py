@@ -9,38 +9,13 @@ from google.cloud.language import enums
 from google.cloud.language import types
 from google.cloud import language_v1
 from google.cloud.language_v1 import enums
-from google.cloud import videointelligence
-from google.cloud.videointelligence import enums
 
-def classify(path, verbose=True):
-    """Classify the input text into categories. """
-    from google.cloud import videointelligence
+def classify(text, verbose=True):
 
-    video_client = videointelligence.VideoIntelligenceServiceClient()
-    features = [videointelligence.enums.Feature.TEXT_DETECTION]
-    video_context = videointelligence.types.VideoContext()
-
-    with io.open(path, 'rb') as file:
-        input_content = file.read()
-
-    operation = video_client.annotate_video(
-        input_content=input_content,  # the bytes of the video file
-        features=features,
-        video_context=video_context)
-
-    result = operation.result(timeout=300)
-
-    # The first result is retrieved because a single video was processed.
-    annotation_result = result.annotation_results[0]
-
-    text = ""
-    for text_annotation in annotation_result.text_annotations:
-        text = text + str(text_annotation.text) + " "
-    print(text)
 
     classification_client = language.LanguageServiceClient()
     entities_client = language_v1.LanguageServiceClient()
-    #encoding_type = enums.EncodingType.UTF8
+    encoding_type = enums.EncodingType.UTF8
     document = language.types.Document(
         content=text,
         type=language.enums.Document.Type.PLAIN_TEXT)
