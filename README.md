@@ -25,20 +25,24 @@ make backend
 
 ### Inspirations
 
-Our team wanted to build something to combat clickbait for ordinary Internet users while also teaching them how to spot and avoid clickbait titles.
+Our team wanted to build something to combat clickbait for ordinary Internet users while also teaching them how to spot and avoid clickbait titles. We also wanted to get familiar with Google Cloud APIs and see how their AI models could be used to tackle the clickbait issue. 
 
 ### What Does ClickSafe Do?
 
-Clicksafe is a Google Chrome extension that warns users of clickbait content when they do inevitably click open intriguing videos. It does this by a popup window that says "This looks like it may be clickbait!" and gives the user options to go back or proceed to the accessed page. By clicking a third option, "What's in the video?", the user can see what items were seen in the video or heard in the audio, kind of like video tags. The user can also get a rating on the explicit content in the video, from very explicit to none at all.
+Clicksafe is a Google Chrome extension that warns users of clickbait content when they do inevitably click open intriguing videos. It does this by a popup window that says "This looks like it may be clickbait!" and gives the user options to go back or proceed to the accessed page. By clicking a third option, "analyze the video", the user can see what items were seen in the video or heard in the audio, kind of like video tags. The user can also get a rating on the explicit content in the video, from very explicit to none at all.
 
 ### How We Built It
 
-Clicksafe leverages this [YouTube Clickbait Detector](https://github.com/alessiovierti/youtube-clickbait-detector) by [alessiovierti](https://github.com/alessiovierti) as well as the Google Cloud APIs for [Video Intelligence](https://cloud.google.com/video-intelligence/docs), [Vision](https://cloud.google.com/vision/docs), and [Natural Language Processing](https://cloud.google.com/natural-language/docs). We also built a lightweight Flask application
+Clicksafe is implemented as a Chrome extension with a lightweight Python Flask backend server. It leverages this [YouTube Clickbait Detector](https://github.com/alessiovierti/youtube-clickbait-detector) by [alessiovierti](https://github.com/alessiovierti) as well as the Google Cloud APIs for [Video Intelligence](https://cloud.google.com/video-intelligence/docs), [Vision](https://cloud.google.com/vision/docs), and [Natural Language Processing](https://cloud.google.com/natural-language/docs). 
 
 ### Challenges
 
-We'll answer that question when we get closer to finishing!
+* Learning how to use the Google APIs
+* Coming up with and pinning down our initial project idea
+* Recovering from several Git conflicts, including one where it seemed we'd lost all our work 😨
 
 ### Accomplishments
 
-We'll answer that question when we get closer to finishing!
+* Our team successfully implemented all three Google Cloud APIs
+* We successfully integrated all backend components into a working server
+* We successfully scraped YouTube data including the title, video URL, and stats like the number of views
