@@ -6,7 +6,7 @@ def capture_frames(path, label_dict, topic_dict):
     vid = cv2.VideoCapture(path)
 
     try:
-        
+
         # creating a folder named vid_shots if it does not exist already
         if not os.path.exists('vid_shots'):
             os.makedirs('vid_shots')
@@ -14,11 +14,11 @@ def capture_frames(path, label_dict, topic_dict):
         # frames that are going to be captured
         else:
             os.system("cd vid_shots && rm -rf *.jpg")
-      
+
     # if not created then raise error
     except OSError:
         print ('Error: Creating directory of vid_shots')
-      
+
     # current frame we are looking at
     currentframe = 0
     # the fps of the video file
@@ -39,12 +39,12 @@ def capture_frames(path, label_dict, topic_dict):
         interval = round(frame_count * (interval_num / upper_limit))
         # reading from frame
         ret,frame = vid.read()
-        
+
         if ret:
             # if video is still left continue creating images
             # writing the frame
             if currentframe == interval:
-                name = './vid_shots/frame' + str(currentframe) + '.jpg'
+                name = os.path.join('vid_shots','frame' + str(currentframe) + '.jpg')
                 cv2.imwrite(name, frame)
                 # call functions here to populate dictionaries
                 # do i need to write the frame capture or can I somehow analyze it without writing?
@@ -58,7 +58,7 @@ def capture_frames(path, label_dict, topic_dict):
             currentframe += 1
         else:
             break
-      
+
     # Release all space and windows once done
     vid.release()
     cv2.destroyAllWindows()
@@ -92,7 +92,7 @@ def detect_labels(path, label_dict):
             '{}\nFor more info on error messages, check: '
             'https://cloud.google.com/apis/design/errors'.format(
                 response.error.message))
-    
+
     return label_dict
 
 
@@ -115,7 +115,7 @@ def detect_safe_search(path, topic_dict):
     #following branch statements and access keys & values
     likelihood_name = {'UNKNOWN':0, 'VERY_UNLIKELY':1, 'UNLIKELY':2, 'POSSIBLE':3,
                        'LIKELY':4, 'VERY_LIKELY':5}
-    
+
     key_list = list(likelihood_name.keys())
     val_list = list(likelihood_name.values())
     #if adult rating not in the dictionary already then add it
@@ -125,7 +125,7 @@ def detect_safe_search(path, topic_dict):
     #value of adult key in the dictionary
     elif likelihood_name.get(topic_dict.get("adult")) < val_list.index(safe.adult):
         topic_dict["adult"] = key_list[val_list.index(safe.adult)]
-    
+
     #if violence rating not in the dictionary already then add it
     if "violence" not in topic_dict:
         topic_dict["violence"] = key_list[val_list.index(safe.violence)]
@@ -147,15 +147,15 @@ def detect_safe_search(path, topic_dict):
             '{}\nFor more info on error messages, check: '
             'https://cloud.google.com/apis/design/errors'.format(
                 response.error.message))
-    
+
     return topic_dict
-    
+
 def get_video_labels_and_safety(path):
     label_dict = {}
     topic_dict = {}
-    
+
     label_dict, topic_dict = capture_frames(path, label_dict, topic_dict)
-    
+
     #This will be the nested dictionary that'll hold one dictionary which contains prevalent
     #labels that appear in the video and one dictionary that contains
     #different innappriate topics and how likely they are to appear in the video
@@ -166,7 +166,7 @@ def get_video_labels_and_safety(path):
     labels_and_restrictions["labels"] = most_freq_keys
     labels_and_restrictions["restrictions"] = topic_dict
     return labels_and_restrictions
-    
+
 '''if __name__ == '__main__':
     stuff = get_video_labels_and_safety("/Users/jaipreethundal/SLOHacks/clickbait-detection-extension/samples/llama.mp4")
     print(stuff)'''

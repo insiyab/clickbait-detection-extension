@@ -1,5 +1,6 @@
 from flask import Flask
 from predict_youtube import *
+from get_frames import *
 import json
 import os
 
@@ -74,9 +75,11 @@ def get_more_info():
         response["error"] = "MISSING_AUDIO_TRANSCRIPTION"
         return json.dumps(response), 400
 
-    # download YouTube video to vid_shots
+    # download YouTube video to vid_shots folder as .mp4
     try:
-        os.system("cd vid_shots && rm -rf *.mp4 && youtube-dl --no-check-certificate " + URL)
+        os.system("cd vid_shots && rm -rf *.mp4 && " \
+	       "youtube-dl --no-check-certificate -f mp4 --restrict-filenames " + URL \
+           + " && cp *.mp4 video.mp4")
     except Exception as err:
         print('Error:', err)
         response["success"] = False
@@ -87,8 +90,9 @@ def get_more_info():
 
     # analyze video content and send JSON response
     try:
-        response["audio_analysis"] = {} # call appropriate function
-        response["video_analysis"] = {} # call appropriate function
+        video_path = os.path.join("vid_shots", "video.mp4")
+        response["audio_analysis"] = 0 # call appropriate function
+        response["video_analysis"] = get_video_labels_and_safety(video_path)
         response["success"] = True
         response["error"] = "None"
         return response
