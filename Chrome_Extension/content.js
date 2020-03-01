@@ -1,26 +1,75 @@
 // used for recording DOM mutations
 let nextBirthmark = 0;
 let targetElement = {style: {background: ''}};
+let targ = {
+	'title': '',
+	'views': '',
+	'URL': ''
+};
+
+function apiRequest(url, obj) {
+	let req = new XMLHttpRequest();
+
+	req.open("POST","http://127.0.0.1:5000/this",true);
+	req.onload = (arg) => {
+		console.log(arg);
+	}
+	req.send(JSON.stringify(obj));
+	//req.send("kelper helper");
+}
+
+function openUrl(url) {
+	chrome.runtime.sendMessage(
+		{
+			task: "open-url",
+			url: url
+		},
+		response => {
+			console.log("TITLE:");
+			console.log(response.videoTitle);
+		});
+}
 
 function highlightElement(e) {
 	var evt = e || window.event;
 
-	if (evt.shiftKey) {
-		E = e.target;
+	//if (evt.shiftKey) {
+	E = e.target;
 
-		// highlight (hold down shift)
-		if (!evt.ctrlKey)
-			if (E != targetElement) {
-				targetElement.style.background = '';
-				targetElement = E;
-				E.style.background = "#FDFF47";
-			} 
+	// highlight (hold down shift)
+	//if (!evt.ctrlKey)
+		//if (E != targetElement && E.tagName == "IMG") {
+		if (E.tagName == "IMG") {
 
-		// unhighlight (hold down shift + control)
-		if (evt.ctrlKey)
-			E.style.background = "";
+			targetElement.style.background = '';
+			targetElement = E;
+			if (url = E.parentNode.parentNode.href) {
+				targ.URL = url;
+				console.log(targ);
+			}
+
+			//E.style.background = "#FDFF47";
+
+			//sendMsg("msg-to-popup",E.tagName);
+		} 
+	// unhighlight (hold down shift + control)
+	if (evt.ctrlKey)
+		E.style.background = "";
+	//}
+	if (E.id == "video-title") {
+		targ.title = E.innerText;
+		console.log(targ);
 	}
+
 }
+document.addEventListener('keydown',e => {
+	var evt = e || window.event;
+	console.log("KEY PRESS");
+	if (evt.shiftKey) {
+		console.log("SHIFT");
+		apiRequest("127.0.0.1:5000/this",targ);
+	}
+});
 
 function clearHighlighted(selectedElements) {
 
@@ -47,31 +96,34 @@ function viewMutations(mutationList, observer) {
 		mark(unmarked);
 }
 
-function messageListener(request, sender, sendResponse) {
-	/*
-	switch (request.task) {
-	}
-	*/
-}
-chrome.runtime.onMessage.addListener(messageListener);
-
-function clickYouTubeElement(element) {
+function sendMsg(task, msg) {
 
 	chrome.runtime.sendMessage(
 		{
-			task: "click"
+			task: task,
+			msg: msg
 			//nodeToClick: nodeBirthmark
-		},
-		response => {
-			/*
-			localStorage.removeItem(nodeBirthmark);
-			if (response.contains)
-				console.log("\""+queryText+"\" exists in tab "+response.tabId);
-			else
-				console.log("\""+queryText+"\" dne in tab "+response.tabId);
-			*/
 		});
 }
+
+function messageListener(request, sender, sendResponse) {
+	switch (request.task) {
+		case "get-video-metrics":
+			sendResponse({videoTitle: document.getElementsByTagName("title").innerText});
+			break;
+		case "activate-tool":
+			console.log("tool activated");
+			document.addEventListener("mousemove", highlightElement, false);
+			break;
+		case "deactivate-tool":
+			document.removeEventListener("mousemove", highlightElement, false);
+			break;
+		default:
+			console.log("ERROR REQUEST TASK (FROM CONTENT SCRIPT)");
+	}
+}
+chrome.runtime.onMessage.addListener(messageListener);
+
 
 document.addEventListener(
 	"keydown", 
@@ -89,12 +141,11 @@ document.addEventListener(
 	
 		// press shift + ctrl + enter to click all the selected elements
 		if (evt.shiftKey && evt.ctrlKey && evt.which === 13) 
-			for (var i=0; i<1000; i++)
-				chrome.runtime.sendMessage(
-					{
-						task: "open-popup"
-					},
-					response => {console.log(response.res);});
+			chrome.runtime.sendMessage(
+				{
+					task: "open-popup"
+				},
+				response => {console.log(response.res);});
 	
 		// press ctrl + 'r' keys to activate/execute video check tool
 		if (evt.ctrlKey && evt.which == 82)

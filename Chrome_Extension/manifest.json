@@ -22,6 +22,7 @@
 
   "permissions": [
     "activeTab",
+		"https://www.justinleemorgan.com/vertex_cover",
 		"tabs",
 		"storage"
    ]

@@ -9,23 +9,15 @@ function messageListener(request, sender, sendResponse) {
 					active: false
 				},
 				tab => {
-					function updateListener(tabId, info) {
-						 if (info.status == "complete") {
-							 chrome.tabs.onUpdated.removeListener(updateListener);
-							 let key = selectedArr[0][0];
-								chrome.tabs.sendMessage(
-									tab.id,
-									{
-										task: "get-video-metrics"
-									},
-									response => {
-										sendResponse({videoTite: response.videoTitle});
-			
-									});
-						 }
-					 }
-					 chrome.tabs.onUpdated.addListener(updateListener);
-					return true;
+					chrome.tabs.sendMessage(
+						tab.id,
+						{
+							task: "get-video-metrics"
+						},
+						response => {
+							sendResponse({videoTite: response.videoTitle});
+
+						});
 				});
 			//chrome.tabs.remove(sender.tab.id);
 			return true;
