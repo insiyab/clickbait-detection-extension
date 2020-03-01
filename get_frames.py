@@ -1,6 +1,6 @@
 import cv2
 import os
-import sys
+from collections import Counter
 
 def capture_frames(path, label_dict, topic_dict):
     vid = cv2.VideoCapture(path)
@@ -10,11 +10,10 @@ def capture_frames(path, label_dict, topic_dict):
         # creating a folder named vid_shots if it does not exist already
         if not os.path.exists('vid_shots'):
             os.makedirs('vid_shots')
-        # if the folder already exists, then make sure it's empty before adding the frames that are going to be captured
+        # if the folder already exists, then make sure it's empty before adding the
+        # frames that are going to be captured
         else:
-            shotlist = [ shot for shot in os.listdir('vid_shots')]
-            for shot in shotlist:
-                os.remove(os.path.join('vid_shots', shot))
+            os.system("cd vid_shots && rm -rf *.jpg")
       
     # if not created then raise error
     except OSError:
@@ -28,7 +27,7 @@ def capture_frames(path, label_dict, topic_dict):
     frame_count = vid.get(cv2.CAP_PROP_FRAME_COUNT)
     # video duration
     vid_duration = frame_count/fps
-    # temporary set number of "frame captures" per video. Subject to change to accomodate length of video
+    # set number of "frame captures" per video.
     num_shots = round(vid_duration * 0.1)
     #a limit to keep track of our intervals and where and which frames we capture
     upper_limit = num_shots + 1
@@ -70,7 +69,7 @@ def detect_labels(path, label_dict):
     from google.cloud import vision
     import io
     client = vision.ImageAnnotatorClient()
-
+    #using google vision API
     with io.open(path, 'rb') as image_file:
         content = image_file.read()
 
@@ -78,19 +77,22 @@ def detect_labels(path, label_dict):
 
     response = client.label_detection(image=image)
     labels = response.label_annotations
-    
+    #getting all the labels into a dictionary
     for label in labels:
         label_key = label.description
+        #if not in the dictionary then add
         if label_key not in label_dict:
             label_dict[label_key] = 0
+        #else increment the frequency
         else:
             label_dict[label_key] = label_dict.get(label_key, 0) + 1
-
+    #Google throwing an error if API runs into an error
     if response.error.message:
         raise Exception(
             '{}\nFor more info on error messages, check: '
             'https://cloud.google.com/apis/design/errors'.format(
                 response.error.message))
+    
     return label_dict
 
 
@@ -99,7 +101,7 @@ def detect_safe_search(path, topic_dict):
     from google.cloud import vision
     import io
     client = vision.ImageAnnotatorClient()
-
+    #using Google vision API here
     with io.open(path, 'rb') as image_file:
         content = image_file.read()
 
@@ -109,49 +111,62 @@ def detect_safe_search(path, topic_dict):
     safe = response.safe_search_annotation
 
     # Names of likelihood from google.cloud.vision.enums
+    #Decided to use dictionary instead in order to help logic in
+    #following branch statements and access keys & values
     likelihood_name = {'UNKNOWN':0, 'VERY_UNLIKELY':1, 'UNLIKELY':2, 'POSSIBLE':3,
                        'LIKELY':4, 'VERY_LIKELY':5}
     
     key_list = list(likelihood_name.keys())
     val_list = list(likelihood_name.values())
-
+    #if adult rating not in the dictionary already then add it
     if "adult" not in topic_dict:
         topic_dict["adult"] = key_list[val_list.index(safe.adult)]
+    #else if the current likelihood rating having adult content is higher then update
+    #value of adult key in the dictionary
     elif likelihood_name.get(topic_dict.get("adult")) < val_list.index(safe.adult):
         topic_dict["adult"] = key_list[val_list.index(safe.adult)]
     
+    #if violence rating not in the dictionary already then add it
     if "violence" not in topic_dict:
         topic_dict["violence"] = key_list[val_list.index(safe.violence)]
+    #else if the current likelihood rating having violence content is higher then update
+    #value of violence key in the dictionary
     elif likelihood_name.get(topic_dict.get("violence")) < val_list.index(safe.violence):
         topic_dict["violence"] = key_list[val_list.index(safe.violence)]
 
-    
+    #if sexual rating not in the dictionary already then add it
     if "sexual" not in topic_dict:
         topic_dict["sexual"] = key_list[val_list.index(safe.racy)]
+    #else if the current likelihood rating having sexual content is higher then update
+    #value of sexual key in the dictionary
     elif likelihood_name.get(topic_dict.get("sexual")) < val_list.index(safe.racy):
         topic_dict["sexual"] = key_list[val_list.index(safe.racy)]
-
+    #Google throwing an error if API runs into an error
     if response.error.message:
         raise Exception(
             '{}\nFor more info on error messages, check: '
             'https://cloud.google.com/apis/design/errors'.format(
                 response.error.message))
+    
     return topic_dict
     
-if __name__ == '__main__':
+def get_video_labels_and_safety(path):
     label_dict = {}
     topic_dict = {}
-    label_dict, topic_dict = capture_frames(sys.argv[1], label_dict, topic_dict)
-    '''detect_labels("/Users/jaipreethundal/SLOHacks/clickbait-detection-extension/vid_shots/frame2117.jpg", label_dict)
-    detect_safe_search("/Users/jaipreethundal/SLOHacks/clickbait-detection-extension/vid_shots/frame2117.jpg", topic_dict)
-    for y in label_dict:
-        print(y, ": ", label_dict.get(y))
-    for x in topic_dict:
-        print(x, ": ", topic_dict.get(x))'''
     
-    #This will be the nested dictionary that'll hold one dictionary which contains prevalent labels that appear in the video and one dictionary that contains different innappriate topics and how likely they are to appear in the video
+    label_dict, topic_dict = capture_frames(path, label_dict, topic_dict)
+    
+    #This will be the nested dictionary that'll hold one dictionary which contains prevalent
+    #labels that appear in the video and one dictionary that contains
+    #different innappriate topics and how likely they are to appear in the video
+    all_labels = Counter(label_dict)
+    most_freq = all_labels.most_common(5)
+    most_freq_keys = [x for (x, _) in most_freq]
     labels_and_restrictions = {}
-    labels_and_restrictions["labels"] = label_dict
+    labels_and_restrictions["labels"] = most_freq_keys
     labels_and_restrictions["restrictions"] = topic_dict
-    print(labels_and_restrictions.keys())
-    print(labels_and_restrictions.values())
+    return labels_and_restrictions
+    
+'''if __name__ == '__main__':
+    stuff = get_video_labels_and_safety("/Users/jaipreethundal/SLOHacks/clickbait-detection-extension/samples/llama.mp4")
+    print(stuff)'''
