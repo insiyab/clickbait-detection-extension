@@ -150,7 +150,7 @@ def detect_safe_search(path, topic_dict):
     
     return topic_dict
     
-def get_video_labels_and_saftey(path):
+def get_video_labels_and_safety(path):
     label_dict = {}
     topic_dict = {}
     
@@ -168,5 +168,5 @@ def get_video_labels_and_saftey(path):
     return labels_and_restrictions
     
 '''if __name__ == '__main__':
-    stuff = get_video_labels_and_saftey("/Users/jaipreethundal/SLOHacks/clickbait-detection-extension/samples/llama.mp4")
+    stuff = get_video_labels_and_safety("/Users/jaipreethundal/SLOHacks/clickbait-detection-extension/samples/llama.mp4")
     print(stuff)'''
