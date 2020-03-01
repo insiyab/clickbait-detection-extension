@@ -9,6 +9,7 @@ install:
 	pip3 install -U scikit-learn==0.19.0
 	pip3 install --upgrade google-cloud-videointelligence
 	pip3 install --upgrade google-cloud-language
+	pip3 install --upgrade google-cloud-vision
 
 server:
 	export GOOGLE_APPLICATION_CREDENTIALS=$(API_PATH) && \
