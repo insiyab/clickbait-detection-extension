@@ -27,17 +27,19 @@ def classify(text, verbose=True):
 
     for category in categories:
         # Turn the categories into a dictionary of the form:
-        # {category.name: category.confidence}, so that they can
+        #{category.name: category.confidence}, so that they can
         # be treated as a sparse vector.
         result[category.name] = category.confidence
 
     if verbose:
-        print(text)
+        #print(text)
+        cat = []
         for category in categories:
-            print(u'=' * 20)
-            print(u'{:<16}: {}'.format('category', category.name))
-            print(u'{:<16}: {}'.format('confidence', category.confidence))
-        print("\n")
+            #print(u'=' * 20)
+            cat.append(category.name)
+            #print(category.name)
+            #print(u'{:<16}: {}'.format('confidence', category.confidence))
+        print('{\n\t"categories": [' + str(cat)[1:-1] + ']')
 
 
 
@@ -56,35 +58,44 @@ def classify(text, verbose=True):
 
     # Available values: NONE, UTF8, UTF16, UTF32
     encoding_type = enums.EncodingType.UTF8
-
+    subcat =[]
     response = client.analyze_entities(document, encoding_type=encoding_type)
     # Loop through entitites returned from the API
     for entity in response.entities:
-        print(u"Representative name for the entity: {}".format(entity.name))
+
+        
+
+        #print(u"Representative name for the entity: {}".format(entity.name))
         # Get entity type, e.g. PERSON, LOCATION, ADDRESS, NUMBER, et al
-        print(u"Entity type: {}".format(enums.Entity.Type(entity.type).name))
+        #print(u"Entity type: {}".format(enums.Entity.Type(entity.type).name))
         # Get the salience score associated with the entity in the [0, 1.0] range
-        print(u"Salience score: {}".format(entity.salience))
+        #print(u"Salience score: {}".format(entity.salience))
         # Loop over the metadata associated with entity. For many known entities,
         # the metadata is a Wikipedia URL (wikipedia_url) and Knowledge Graph MID (mid).
         # Some entity types may have additional metadata, e.g. ADDRESS entities
         # may have metadata for the address street_name, postal_code, et al.
+        a = b = 0
         for metadata_name, metadata_value in entity.metadata.items():
-            print(u"{}: {}".format(metadata_name, metadata_value))
+            a = metadata_name
+            b = metadata_value
+        if a or b:
+            subcat.append((entity.name, enums.Entity.Type(entity.type).name, (a,b)))
+        else:
+            subcat.append((entity.name, enums.Entity.Type(entity.type).name))
 
         # Loop over the mentions of this entity in the input document.
         # The API currently supports proper noun mentions.
-        for mention in entity.mentions:
-            print(u"Mention text: {}".format(mention.text.content))
+        
+        #for mention in entity.mentions:
+            #subcat.append((mention.text.content, enums.EntityMention.Type(mention.type).name))
             # Get the mention type, e.g. PROPER for proper noun
-            print(
-                u"Mention type: {}\n".format(enums.EntityMention.Type(mention.type).name)
-            )
 
+        
     # Get the language of the text, which will be the same as
     # the language specified in the request or, if not specified,
     # the automatically-detected language.
-    print(u"Language of the text: {}".format(response.language))
+    print('\t"sub-categories": [' + str(subcat)[1:-1] + ']')
+    #print(u"Language of the text: {}".format(response.language))
 
     return result
 
