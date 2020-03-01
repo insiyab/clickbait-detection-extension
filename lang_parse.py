@@ -21,9 +21,20 @@ def classify(text, verbose=True):
     categories_response = classification_client.classify_text(document)
     entities_response = entities_client.analyze_entities(document, encoding_type=encoding_type)
 
+    if "fuck"in text or "cunt" in text:
+        prof = "R"
+    elif "shit" in text or "bitch" in text:
+        prof = "PG-13"
+    elif "ass" in text or "damn" in text:
+        prof = "PG"
+    else:
+        prof = "G"
+    
+
     obj = {}
     obj['categories'] = []
     obj["entities"] = []
+    obj["suggested-rating"] = prof
 
     categories = categories_response.categories
     for category in categories:
