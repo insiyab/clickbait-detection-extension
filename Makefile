@@ -13,7 +13,7 @@ install:
 
 server:
 	export GOOGLE_APPLICATION_CREDENTIALS=$(API_PATH) && \
-		export FLASK_APP=backend.py && flask run
+		export FLASK_ENV=development && export FLASK_APP=backend.py && flask run
 
 clean:
 	rm -rf __pycache__ .DS_store
