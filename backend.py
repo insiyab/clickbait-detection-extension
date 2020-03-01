@@ -55,8 +55,8 @@ def get_more_info():
     # create base response
     response = {
         "success": False,
-        "audio_analysis": -1,
-        "visual_analysis": -1,
+        "audio_analysis": "",
+        "visual_analysis": "",
         "error": "INVALID_REQUEST"
     }
 
@@ -80,8 +80,8 @@ def get_more_info():
     except Exception as err:
         print('Error:', err)
         response["success"] = False
-        response["audio_analysis"] = -1
-        response["video_analysis"] = -1
+        response["audio_analysis"] = ""
+        response["video_analysis"] = ""
         response["error"] = "VIDEO_RETRIEVAL_FAILED"
         return json.dumps(response), 400
 
@@ -95,8 +95,8 @@ def get_more_info():
     except Exception as err:
         print('Error:', err)
         response["success"] = False
-        response["audio_analysis"] = -1
-        response["video_analysis"] = -1
+        response["audio_analysis"] = ""
+        response["video_analysis"] = ""
         response["error"] = "ANALYSIS_FAILED"
         return json.dumps(response), 400
 
