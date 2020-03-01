@@ -5,6 +5,7 @@ from get_frames import *
 import json
 import os
 from flask_cors import CORS
+import time
 
 app = Flask(__name__)
 CORS(app)
@@ -110,3 +111,36 @@ def get_more_info():
         return json.dumps(response), 400
 
     # return "getting more information"
+
+# if __name__ == '__main__':
+#     parser = argparse.ArgumentParser(description="Predict if a Youtube video is clickbait or not.")
+#     parser.add_argument(
+#         "--title", "-t",
+#         type=str, help="Title.", required=True)
+#     parser.add_argument(
+#         "--views", "-v",
+#         type=int, help="Number of views.", required=False)
+#     parser.add_argument(
+#         "--likes", "-l",
+#         type=int, help="Number of likes.", required=False)
+#     parser.add_argument(
+#         "--dislikes", "-d",
+#         type=int, help="Number of dislikes.", required=False)
+#     parser.add_argument(
+#         "--comments", "-c",
+#         type=int, help="Number of comments.", required=False)
+#     parser.add_argument(
+#         "--URL", "-u",
+#         type=str, help="URL of video.", required=False)
+#     args = parser.parse_args()
+#
+#     print(youtube_predictor(args.title, args.views, args.likes, args.dislikes, args.comments))
+#
+#     if(args.URL is not None):
+#         # os.system("bash load.sh")
+#         os.system("cd vid_shots && rm -rf *.mp4 && youtube-dl --no-check-certificate -f mp4 --restrict-filenames " + str(args.URL) + " && cp *.mp4 video.mp4")
+#         # os.system("cd vid_shots && cp *.mp4 video.mp4")
+#         # time.sleep(2000)
+#         video_path = os.path.join("vid_shots", "video.mp4")
+#         print(audio_classify(video_path))
+#         print(get_video_labels_and_safety(video_path))
