@@ -12,6 +12,7 @@ from google.cloud.language_v1 import enums
 
 def audio_classify(text, verbose=True):
 
+    text = text+text
     classification_client = language.LanguageServiceClient()
     entities_client = language_v1.LanguageServiceClient()
     encoding_type = enums.EncodingType.UTF8
@@ -53,5 +54,5 @@ def audio_classify(text, verbose=True):
     print(obj)
     return obj
 
-# if __name__ == '__main__':
-# 	audio_classify(sys.argv[1])
+if __name__ == '__main__':
+	audio_classify(sys.argv[1])
