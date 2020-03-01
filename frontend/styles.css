@@ -29,6 +29,24 @@ h1 {
   place-self: center left;
 }
 
+#xbtn {
+  font-family: 'Oxanium';
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1em;
+  grid-column-start: 3;
+  grid-row-start: 1;
+  /* place-self: top right; */
+  justify-self: right;
+  align-self: top;
+  background: transparent;
+  color: black;
+  border: 0px;
+  height: 1em;
+  width: 1em;
+  text-align: center;
+}
+
 p {
   font-family: 'Lato';
   font-style: normal;
@@ -52,7 +70,7 @@ p {
   grid-row-end: span 1;
 }
 
-button {
+.btn {
   font-family: 'Lato';
   font-style: normal;
   font-weight: normal;
@@ -67,7 +85,7 @@ button {
   justify-self: stretch;
 }
 
-button:hover {
+.btn:hover {
   background: #2196F3;
   color: white;
 }
