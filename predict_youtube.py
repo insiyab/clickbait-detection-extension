@@ -8,6 +8,7 @@ import pandas as pd
 import pickle
 from gensim.parsing.preprocessing import *
 import os.path
+import django
 
 ######## FOR YOUTUBE CLICKBAIT DETECTION #########
 # source: https://github.com/alessiovierti/youtube-clickbait-detector
@@ -28,10 +29,8 @@ mean_log_video_comments = pickle.load(open(os.path.join(YT_DETECTOR_PATH, "mean-
 def tokenize(string):
 
     """ Tokenizes a string.
-
     Adds a space between numbers and letters, removes punctuation, repeated whitespaces, words
     shorter than 2 characters, and stop-words. Returns a list of stems and, eventually, emojis.
-
     @param string: String to tokenize.
     @return: A list of stems and emojis.
     """
@@ -68,11 +67,9 @@ def tokenize(string):
 def average_embedding(tokens, word2vec, na_vector=None):
 
     """ Embeds a title with the average representation of its tokens.
-
     Returns the mean vector representation of the tokens representations. When no token is in the
     Word2Vec model, it can be provided a vector to use instead (for example the mean vector
     representation of the train set titles).
-
     @param tokens: List of tokens to embed.
     @param word2vec: Word2Vec model.
     @param na_vector: Vector representation to use when no token is in the Word2Vec model.
@@ -142,30 +139,23 @@ def youtube_predictor(title, views=None, likes=None, dislikes=None, comments=Non
     return (svm.predict(sample)[0])
 
 
-# set production mode to 0 to use command line arguments, 1 to use the chrome extension
-production_mode = 0
-
-if not production_mode:
-    if __name__ == '__main__':
-        parser = argparse.ArgumentParser(description="Predict if a Youtube video is clickbait or not.")
-        parser.add_argument(
-            "--title", "-t",
-            type=str, help="Title.", required=True)
-        parser.add_argument(
-            "--views", "-v",
-            type=int, help="Number of views.", required=False)
-        parser.add_argument(
-            "--likes", "-l",
-            type=int, help="Number of likes.", required=False)
-        parser.add_argument(
-            "--dislikes", "-d",
-            type=int, help="Number of dislikes.", required=False)
-        parser.add_argument(
-            "--comments", "-c",
-            type=int, help="Number of comments.", required=False)
-        args = parser.parse_args()
-
-    print(youtube_predictor(args.title, args.views, args.likes, args.dislikes, args.dislikes))
-
-else:
-    print("in production mode...")
+# if __name__ == '__main__':
+#     parser = argparse.ArgumentParser(description="Predict if a Youtube video is clickbait or not.")
+#     parser.add_argument(
+#         "--title", "-t",
+#         type=str, help="Title.", required=True)
+#     parser.add_argument(
+#         "--views", "-v",
+#         type=int, help="Number of views.", required=False)
+#     parser.add_argument(
+#         "--likes", "-l",
+#         type=int, help="Number of likes.", required=False)
+#     parser.add_argument(
+#         "--dislikes", "-d",
+#         type=int, help="Number of dislikes.", required=False)
+#     parser.add_argument(
+#         "--comments", "-c",
+#         type=int, help="Number of comments.", required=False)
+#     args = parser.parse_args()
+#
+# print(youtube_predictor(args.title, args.views, args.likes, args.dislikes, args.commments))

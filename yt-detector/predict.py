@@ -160,4 +160,4 @@ if __name__ == '__main__':
     #     "video_dislikes": args.dislikes if args.dislikes is not None else np.NaN,
     #     "video_comments": args.comments if args.comments is not None else np.NaN,
     # }
-    print(youtube_predictor(args.title, args.views, args.likes, args.dislikes, args.dislikes))
+    print(youtube_predictor(args.title, args.views, args.likes, args.dislikes, args.comments))
